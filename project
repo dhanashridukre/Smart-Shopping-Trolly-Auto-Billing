@@ -1,0 +1,86 @@
+#include <iostream>
+#include <vector>
+#include <iomanip>
+using namespace std;
+
+// Project: Smart Automatic Shopping Trolley
+// Developed by: Dhanashri Dukare
+
+struct product {
+    string name;
+    float price;
+};
+
+vector<product> cart;
+float total = 0.0;
+
+string scanBarcode() {
+    string code;
+    cout << "\nScan barcode (123/124/125/126), 000=remove, EXIT=checkout: ";
+    cin >> code;
+    return code;
+}
+
+product getProductFromBarcode(string code) {
+    if (code == "123") return {"Milk", 20.0};
+    if (code == "124") return {"Maggi", 10.0};
+    if (code == "125") return {"Frooti", 30.0};
+    if (code == "126") return {"Oil", 100.0};
+    return {"Unknown", 0.0};
+}
+
+void addProductToCart(product p) {
+    cart.push_back(p);
+    total += p.price;
+
+    cout << "Added: " << p.name << " ₹" << p.price << endl;
+    cout << "Current Total: ₹" << total << endl;
+
+    if (p.name == "Maggi")
+        cout << "You might also need Oil!\n";
+
+    if (total > 1000)
+        cout << "Warning: Budget limit exceeded!\n";
+}
+
+void removeLastProduct() {
+    if (!cart.empty()) {
+        product last = cart.back();
+        cart.pop_back();
+        total -= last.price;
+        cout << "Removed: " << last.name << endl;
+    } else {
+        cout << "Cart is already empty.\n";
+    }
+}
+
+void generateReceipt() {
+    cout << "\nFinal Receipt\n-----\n";
+    for (auto &p : cart) {
+        cout << p.name << " - ₹" << p.price << endl;
+    }
+    cout << "-----\n";
+    cout << "Total Amount: ₹" << fixed << setprecision(2) << total << endl;
+}
+
+int main() {
+    cout << "Welcome to Smart Automatic Shopping Trolley \n";
+    cout << "Developer: Dhanashri Dukare\n";
+
+    while (true) {
+        string code = scanBarcode();
+
+        if (code == "EXIT") {
+            generateReceipt();
+            break;
+        } else if (code == "000") {
+            removeLastProduct();
+        } else {
+            product p = getProductFromBarcode(code);
+            addProductToCart(p);
+        }
+    }
+
+    cout << "Thank you for shopping!\n";
+    return 0;
+}
